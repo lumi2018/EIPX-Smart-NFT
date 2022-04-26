@@ -1,7 +1,7 @@
 ---
 eip: 4519
 title: Non-Fungible Tokens Tied to Physical Assets (SmartNFT)
-description: Standard interface for non-fungible tokens representing assets that can generate or recover their own blockchain accounts and obey users.
+description: Standard interface for non-fungible tokens representing physical assets that can generate or recover their own blockchain accounts and obey users.
 author: Javier Arcenegui (@Hardblock-IMSE-CNM), Rosario Arjona <arjona@imse-cnm.csic.es>, Roberto Román <roman@imse-cnm.csic.es>, Iluminada Baturone <lumi@imse-cnm.csic.es>
 discussions-to: https://ethereum-magicians.org/t/new-proposal-of-smart-non-fungible-token/7677
 status: Draft
@@ -12,14 +12,14 @@ requires: 165, 721
 ---
 
 ## Abstract
-This EIP proposes a Non-Fungible Token Standard to represent smart assets (SmartNFT) such as an Internet of Things (IoT) device. A SmartNFT is bound to a smart asset, that can check its information in its SmartNFT. This smart asset can hold an ethereum account, consequently the assets could sign messages or transactions. The SmartNFT also serves as a utility to the user as it can establish secure communication with their owners and other Ethereum users. Likewise, it can operate dynamically with several operating modes associated with its token states. Thats mean the smart asset can have an operating mode depending if its in one state of token or other. Then the token state define if the owner or user of token can use the asset. To make the standard as generic as possible, user management has been divided with the management of the cryptographically secure link of the token with the device. SmartNFTs extend [ERC-721](./eip-721.md) non-fungible tokens.
+This EIP proposes a Non-Fungible Token Standard to represent a physical asset, such as an Internet of Things (IoT) device. A SmartNFT is tied to a physical asset which can check its information in its SmartNFT. The SmartNFT can include an ethereum address of the physical asset, consequently the physical asset could sign messages or transactions by using its ethereum address. Likewise, the SmartNFT can operate dynamically with several operating modes associated with its token states. That means the physical asset can have an operating mode depending if its token is in one state or another. The token state defines if the token owner or the token user can use the asset. A cryptographically secure mutual authentication process is established between the physical asset and its owner or its user. SmartNFTs extend [ERC-721](./eip-721.md) non-fungible tokens, which only allow representing assets by a unique identifier (not an ethereum address) and include owners but not users.
 
 ## Motivation
-This SmartNFT was developed because the ERC-721 standard does not define the "users" of an asset, only the "owners", and does not assign a blockchain account (BCA) address, "asset", to the physical asset. Smart assets (for example, IoT devices) are increasing nowadays and they can be managed in a secure way if they are bound to SmartNFTs. SmartNFTs allow implementing a secure way to share a secret key between the owner and the asset and between the user and the asset, confirmed with the consensus of the blockchain. In this way, assets, owners, and users can ensure that they are exchanging information only with trusted parts.
+This SmartNFT was developed because the ERC-721 standard does not include the users of an asset (only include the owners) and does not include the ethereum address of the asset. Smart assets (for example, IoT devices) are increasing nowadays and they can be managed in a secure and traceability way if they are bound to SmartNFTs. SmartNFTs allow establishing secure communication channels between the physical asset and its owner and its user. In this way, assets, owners and users can ensure that they are exchanging information only with trusted parties.
 
-**Secure Asset Bound to a SmartNFT**
+**Secure Physical Asset Tied to a SmartNFT**
  
-Current non-fungible tokens are associated with passive assets, either virtual or physical things, but they do not include any standardized mechanism to bind the non-fungible token to the asset. Binding assets to NFTs is interesting because the "asset" can know anytime its "owner" and "user". The "asset" is an active part in any transfer of ownership and use. In addition, the "asset" is smart, for example to revoke orders from a non-authorized user, or to be inoperative until the authentication with the user or the owner is carried out.
+Current non-fungible tokens are associated with passive assets, either virtual or physical things, but they do not include any standardized mechanism to tie the non-fungible token to the asset. Tying assets to NFTs is interesting because the asset can know anytime its owner and user. The assets, owners and users are identified by their ethereum addresses and the ethereum address of the asset is obtained from a physical property of the physical asset. The asset is an active part in any transfer of ownership and use. In addition, the asset is smart, for example to revoke orders from a non-authorized user, or to be inoperative until the authentication with the user or the owner is carried out.
  
 **User Management Mechanism**
  
@@ -30,19 +30,19 @@ SmartNFTs allow implementing a new and useful user management mechanism. In the 
 The engagements of the asset with an owner and a user are carried out after a mutual authentication protocol (for example, based on elliptic curve Diffie-Hellman key exchange protocol). This protocol can be employed for a key agreement between the asset and its owner, in the one side, and the asset and its user, in the other side. 
 
 ## Specification
-Asset and user are optional attributes but at least one of them should be used in a SmartNFT. In the case of using only the attribute user, two states define if the token is assigned or not to a user. Figure 1 shows the corresponding states in a flow chart. When a token is created, transferred or unassigned, the token state is set to “notAssigned”. If the token is assigned to a valid user, the state is set to "userAssigned".
+The attributes asset and user include, respectively, the ethereum addresses of the physical asset and the user. Asset and user are optional attributes but at least one of them should be used in a SmartNFT. In the case of using only the attribute user, two states define if the token is assigned or not to a user. Figure 1 shows the corresponding states in a flow chart. When a token is created, transferred or unassigned, the token state is set to “notAssigned”. If the token is assigned to a valid user, the state is set to "userAssigned".
  
 ![Figure 1 : Flow chart of the token states with user defined (and asset undefined)](../assets/eip-4519/images/Figure1.png)
   
-In the case of defining the asset attribute but not the user attribute, two states define if the token is waiting for authentication with the owner or **if** authentication has finished successfully. Figure 2 shows the corresponding states in a flow chart. When a token is created or transferred to a new owner, then the token changes its state to "waitingForOwner". In this state, the token is waiting for authentication by the owner. Once the asset is authenticated, its associated token changes its state to "engagedWithOwner".
+In the case of defining the attribute asset but not the attribute user, two states define if the token is waiting for authentication with the owner or if authentication has finished successfully. Figure 2 shows the corresponding states in a flow chart. When a token is created or transferred to a new owner, then the token changes its state to "waitingForOwner". In this state, the token is waiting for authentication by the owner. Once the asset is authenticated, its associated token changes its state to "engagedWithOwner".
 
 ![Figure 2 : Flow chart of the token states with asset defined (and user undefined)](../assets/eip-4519/images/Figure2.jpg)
  
-Finally, if both the asset and user attributes are defined, the states define if the asset has been authenticated or not by the owner or the user (waitingForOwner, engagedWithOwner, waitingForUser and engagedWithUser). The flow chart in Figure 3 shows all the possible state changes. The states related to the owner are the same as in Figure 2. The difference is that, from the state “EngagedWithOwner”, the token can be assigned to a user. When a user is assigned, from the states "EngagedWithOwner", "waitingForUser" or "engagedWithUser", the token changes its state to "waitingForUser". Once the asset is authenticated by the user, the state of its associated token is set to "engagedWithUser", and the user is able to use the token or asset.
+Finally, if both attributes asset and user are defined, the states define if the asset has been authenticated or not by the owner or the user (waitingForOwner, engagedWithOwner, waitingForUser and engagedWithUser). The flow chart in Figure 3 shows all the possible state changes. The states related to the owner are the same than in Figure 2. The difference is that, from the state “EngagedWithOwner”, the token can be assigned to a user. When a user is assigned, from the states "EngagedWithOwner", "waitingForUser" or "engagedWithUser", the token changes its state to "waitingForUser". Once the asset is authenticated by the user, the state of its associated token is set to "engagedWithUser", and the user is able to use the token or asset.
 
  ![Figure 3 : Flow chart of the token states with user and asset defined](../assets/eip-4519/images/Figure3.jpg)
  
-In order to complete a token transaction, a new owner must carry out a mutual authentication process, which is off-chain with the asset and on-chain with the token, by using their Ethereum accounts. Similarly, a new user must carry out a mutual authentication process. SmartNFTs define how the authentication processes start and finish. These authentication processes allow deriving fresh session cryptographic keys for secure communication between assets and owners, and between assets and users. Therefore, the trustworthiness of the assets can be traced even if new owners and users manage them. 
+In order to complete a token transaction, a new owner must carry out a mutual authentication process, which is off-chain with the asset and on-chain with the token, by using their ethereum addresses. Similarly, a new user must carry out a mutual authentication process. SmartNFTs define how the authentication processes start and finish. These authentication processes allow deriving fresh session cryptographic keys for secure communication between assets and owners, and between assets and users. Therefore, the trustworthiness of the assets can be traced even if new owners and users manage them. 
 
 When the SmartNFT is created or when the ownership is transferred, the operating mode of the asset defined by the token state is "Waiting for owner". Assuming that the asset is an electronic physical asset, it saves in its memory the owner address. The owner generates a pair of keys using the elliptic curve secp256k1 and the primitive element P used on this curve: a secret key (SK<sub>O_D</sub>) and a Public Key (PK<sub>O_D</sub>), so that PK<sub>O_D</sub> = SK<sub>O_D</sub>*P. To generate the shared key between owner and asset, (K<sub>O</sub>), the public key of the asset, (PK<sub>DEV</sub>), is employed as follows:
  
@@ -56,7 +56,7 @@ If everything is correctly done, K<sub>O</sub> and K<sub>O_D</sub> are the same 
  
 K<sub>O</sub>=PK<sub>DEV</sub>*SK<sub>O_D</sub>=(SK<sub>DEV</sub>*P)*SK<sub>O_D</sub>= SK<sub>DEV</sub>*(SK<sub>O_D</sub>*P)=SK<sub>DEV</sub>*PK<sub>O_D</sub>
 
-Using the function ownerEngagement, the asset sends the K<sub>O_D</sub> obtained and if it is the same as K<sub>O</sub>, then the state of the token changes to "Engaged with owner" and the event OwnerEngaged is sent. Once the asset receives the event, it changes its operation mode to "Engaged with owner". This process is shown in Figure 4. From this moment, the asset can be managed by the owner. 
+Using the function ownerEngagement, the asset sends the K<sub>O_D</sub> obtained and if it is the same than K<sub>O</sub>, then the state of the token changes to "Engaged with owner" and the event OwnerEngaged is sent. Once the asset receives the event, it changes its operation mode to "Engaged with owner". This process is shown in Figure 4. From this moment, the asset can be managed by the owner. 
  
  ![Figure 4: Steps in a successful owner and asset mutual authentication process](../assets/eip-4519/images/Figure4.jpg)
  
@@ -69,11 +69,11 @@ If everything is correctly done, K<sub>U</sub> and K<sub>UD</sub> are the same s
  
 K<sub>U</sub>=PK<sub>DEV</sub>*SK<sub>UD</sub>=(SK<sub>DEV</sub>*P)*SK<sub>UD</sub>= SK<sub>DEV</sub>*(SK<sub>UD</sub>*P)=SK<sub>DEV</sub>*PK<sub>UD</sub>
 
-Using the function userEngagement, the asset sends the K<sub>UD</sub> obtained and if it is the same as K<sub>U</sub>, then the state of the token changes to "Engaged with user" and the event UserEngaged is sent. Once the asset receives the event, it changes its operation mode to "Engaged with user". This process is shown in Figure 5. From this moment, the asset can be managed by the user. 
+Using the function userEngagement, the asset sends the K<sub>UD</sub> obtained and if it is the same than K<sub>U</sub>, then the state of the token changes to "Engaged with user" and the event UserEngaged is sent. Once the asset receives the event, it changes its operation mode to "Engaged with user". This process is shown in Figure 5. From this moment, the asset can be managed by the user. 
  
  ![Figure 5: Steps in a successful user and asset mutual authentication process](../assets/eip-4519/images/Fig5_rev.png)
 
-Since the establishment of a shared secret is very important for a secure communication, we propose the inclusion of the attributes hashK_OD, hashK_UD, and dataEngage in the SmartNFT. The first two attributes define, respectively, the hash of the secret shared between the asset and its owner and between the asset and its user. Assets, owners, and users should check they are using the correct shared secrets. The attribute dataEngagement defines the public data needed for the agreement. If the mutual authentication fails, dataEngagement allows detecting which parts failed. 
+Since the establishment of a shared secret is very important for a secure communication, we propose the inclusion of the attributes hashK_OD, hashK_UD and dataEngage in the SmartNFT. The first two attributes define, respectively, the hash of the secret shared between the asset and its owner and between the asset and its user. Assets, owners and users should check they are using the correct shared secrets. The attribute dataEngagement defines the public data needed for the agreement. If the mutual authentication fails, dataEngagement allows detecting which parts failed. 
  
 ```solidity
 pragma solidity ^0.8.0;
@@ -198,19 +198,19 @@ pragma solidity ^0.8.0;
 }
 ```
 
-This interface is an extension of the [ERC-721](./eip-712.md), is compatible with the standard, and needs the ERC-721 interface. Then, metadata and enumeration extensions are compatible and included in this draft. Like EIP-165 could be required, supportsInterface SHOULD BE overridden to include the interfaceId of this EIP.
+This interface is an extension of the [ERC-721](./eip-712.md), is compatible with the standard, and needs the ERC-721 interface. Then, metadata and enumeration extensions are compatible and included in this draft. Like EIP-165 could be required, supportsInterface should be overridden to include the interfaceId of this EIP.
  
 ## Rationale
-The number of NFT with user management or tied with physical asset are growing. Therefore, it is essential to establish a standard capable of loading all these options working together or separately. The incorporation of user or asset to the NFT is optional. It does not make sense that it does not have either of the two options in this NFT since it would be an ERC-721 token. The possibility of generating two separate interfaces has been proposed, however, some functions such as "StartUserEngagement" would only be available if both are implemented, so a single interface with all the options is proposed.
+The number of NFTs with user management or with a tie to a physical asset are growing (for example, in the context of the Internet of Things). Therefore, it is essential to establish a standard capable of including all these options working together or separately. The incorporation of an ethereum address of the user or an ethereum address of a physical asset to the NFT is optional. However, it does not make sense that it does not include any of the two ethereum addresses since the NFT would be an ERC-721 token. The possibility of generating two separate interfaces has been proposed, however, some functions such as "StartUserEngagement" would only be available if both options are implemented, so a single interface with all the options is proposed.
 
 **Authentication**
-The authentication is an off-chain process. This EIP propose use the Smart Contract to verify the authentication using a shared key that has been explained. Asset and owner/user must share the hash of this key to verify this key, avoiding a malicious threat.
+This EIP proposes use the Smart Contract to verify the mutual authentication process between the physical asset and the owner or the user by verifying the hash of a shared key.
 
-**Life Signal**
-This EIP propose a life signal to check that the asset is work correctly and avoid a malicious owner or user could use the asset infinitely. For this reason, some attributes are proposed.
+**Tie Time**
+This EIP proposes the attributes timestamp (to register in the blockchain whenever the physical asset checks the tie with its token) and timeout (to register the maximum delay time established for the physical asset to prove again the tie). These attributes avoid a malicious owner or user could use the asset infinitely.
 
-**ERC-721 based**
-The [ERC-721](./eip-712.md) is a strong base for any NTF, nevertheless user management and authentication process are not considered. This EIP propose an update of [ERC-721](./eip-712.md) respecting the backwards compatibility.
+**ERC-721-based**
+The [ERC-721](./eip-712.md) is a strong foundation for any NTF, nevertheless ethereum addresses of assets, user management, and authentication and key exchange processes are not considered. This EIP proposes an update of the [ERC-721](./eip-712.md) respecting backward compatibility.
 
   
 ## Backwards Compatibility
@@ -223,8 +223,8 @@ The test case presented in the paper shown below is addressed in **0x7eB5A03E7ED
 A first version was presented in a paper of the Special Issue **Security, Trust and Privacy in New Computing Environments** of **Sensors** journal of **mdpi** editorial. The paper, entitled [Secure Combination of IoT and Blockchain by Physically Binding IoT Devices to Smart Non-Fungible Tokens Using PUFs](../assets/eip-4519/sensors-21-03119.pdf), was written by the same authors of this draft.
 
 ## Security Considerations
-In this draft, a generic system has been proposed for the creation of non-fungible tokens able to represent smart assets. A generic point of view based on the improvements of the current ERC-721 standard is provided, such as the implementation of the user management mechanism, which does not affect the token's ownership.
-The main objective is to bind a smart physical asset with a non-fungible token. The physical asset should have the ability to generate a blockchain account from itself in a totally random way so that only the asset is able to know the secret from which the blockchain account is generated. In this way, identity theft is avoided and the asset can be proven to be completely genuine. In order to ensure this, it is recommended that only the manufacturer of the asset has the ability to create its associated token, since it is intended to be backward compatible. In the case of an IoT device, the device firmware will be unable to share and modify the secret. It is recommended that assets reconstruct their secrets from non-sensitive information such as the helper data associated with Physical Unclonable Functions (PUFs). Although a secure key exchange protocol has been proposed, the token is open to coexist with other types of key exchange.  
+In this draft, a generic system has been proposed for the creation of non-fungible tokens tied to physical assets. A generic point of view based on the improvements of the current ERC-721 standard is provided, such as the implementation of the user management mechanism, which does not affect the token's ownership.
+The physical asset should have the ability to generate an ethereum address from itself in a totally random way so that only the asset is able to know the secret from which the blockchain account is generated. In this way, identity theft is avoided and the asset can be proven to be completely genuine. In order to ensure this, it is recommended that only the manufacturer of the asset has the ability to create its associated token, since it is intended to be backward compatible. In the case of an IoT device, the device firmware will be unable to share and modify the secret. It is recommended that assets reconstruct their secrets from non-sensitive information such as the helper data associated with Physical Unclonable Functions (PUFs). Although a secure key exchange protocol has been proposed, the token is open to coexist with other types of key exchange.  
 
 ## Copyright
-Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+Copyright and related rights compatible with [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
