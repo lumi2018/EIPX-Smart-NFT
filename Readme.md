@@ -1,7 +1,7 @@
 ---
 eip: 4519
 title: Non-Fungible Tokens Tied to Physical Assets (SmartNFT)
-description: Standard interface for non-fungible tokens representing assets that can generate or recover their own blockchain accounts and obey users.
+description: Standard interface for non-fungible tokens representing PHYSICAL assets that can generate or recover their own blockchain accounts and obey users.
 author: Javier Arcenegui (@Hardblock-IMSE-CNM), Rosario Arjona <arjona@imse-cnm.csic.es>, Roberto Román <roman@imse-cnm.csic.es>, Iluminada Baturone <lumi@imse-cnm.csic.es>
 discussions-to: https://ethereum-magicians.org/t/new-proposal-of-smart-non-fungible-token/7677
 status: Draft
